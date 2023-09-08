@@ -1,0 +1,32 @@
+main {
+    min-height: calc(100vh - 160px);
+  }
+
+/* Estilos para la lista de imágenes */
+#listaImagenes {
+  list-style-type: none; /* Quita los marcadores de lista */
+  padding: 0; /* Elimina el relleno predeterminado de la lista */
+  display: flex; /* Hace que los elementos de lista sean flexibles */
+  flex-wrap: wrap; /* Permite que los elementos de lista se envuelvan en filas */
+  justify-content: space-between; /* Distribuye los elementos de lista en el espacio disponible */
+  margin-top: 20px; /* Espacio superior para separar del contenido anterior */
+}
+
+#listaImagenes li {
+  flex-basis: calc(33.33% - 10px); /* Ancho máximo de cada elemento de lista (3 columnas) */
+  margin-bottom: 10px; /* Espacio inferior para separar las imágenes */
+}
+
+#listaImagenes img {
+  width: 100%; /* Establece un ancho del 100% para que todas las imágenes tengan el mismo ancho */
+  height: 200px; /* Establece la misma altura para todas las imágenes (ajusta según tus necesidades) */
+}
+
+/* Estilos para el div de información */
+.imagen-info {
+  max-height: 100px; /* Altura máxima del div de información */
+  overflow-y: auto; /* Agrega una barra de desplazamiento vertical si el contenido excede la altura máxima */
+  padding: 10px; /* Espacio interior alrededor de la información */
+  border: 1px solid #ccc; /* Borde para el div de información */
+  background-color: #f9f9f9; /* Fondo del div de información */
+}
