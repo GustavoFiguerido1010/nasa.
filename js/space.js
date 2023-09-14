@@ -89,4 +89,151 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
  
+/*-----------------------------------*\
+ * #funcion para calificacion con estrellasS
+\*-----------------------------------*/
+
+function createStarRating(score) {
+  const starCount = 5; // Número total de estrellas
+  const filledStars = Math.round(score); // Número de estrellas llenas. La funcion Math.round rendea a numeros enteros.
+
+  let starRatingHTML = ''; // Cadena HTML para las estrellas
+
+  // Creamos estrellas llenas
+  for (let i = 0; i < filledStars; i++) {
+    starRatingHTML += '<i class="fa fa-star"></i>'; // fa fa-star hace referencia a estrellas llenas
+  }
+
+  // Creamos las estrellas vacías (las que faltan)
+  for (let i = filledStars; i < starCount; i++) {
+    starRatingHTML += '<i class="fa fa-star-o"></i>'; // fa fa-star-o hace referencia a estrellas vacias
+  }
+
+  return starRatingHTML; // Devolver la cadena HTML de las estrellas
+}
+  /*-----------------------------------*\
+ * #FUNCION PARA ENVIAR COMENTARIOS
+\*-----------------------------------*/
+
+const commentForm = document.getElementById("comment-form");
+
+commentForm.addEventListener("submit", function (event) {
+  event.preventDefault(); // Prevenir el envío predeterminado del formulario
+
+  // Obtener el valor del comentario y la calificación
+  const comment = document.getElementById("comment").value;
+  const rating = document.querySelector('input[name="rating"]:checked');
+
+  if (!rating) {
+    // mensaje de error por no seleccionar calificación
+    alert("Por favor, seleccione una calificación.");
+    return;
+  }
+if (!comment) {
+  // mensaje de error si no existe comentario 
+  alert("Por favor, ingrese un comentario")
+  return;
+}
+/*-----------------------------------*\
+ * #Crear un nuevo comentario
+\*-----------------------------------*/
   
+  const newCommentHTML = `
+  <div class="comment">
+      <button class="delete-comment-button" onclick="deleteComment(this)">&#10006;</button>
+      <div class="comment-content">
+        <p><span class="user">Usuario</span> - ${formattedDate} ${formattedTime} <div class="star-rating">${createStarRating(Number(rating.value))}</div></p>
+        <p>${comment}</p>
+      </div>
+    </div>
+  `;
+
+  // Agregar el nuevo comentario al área de comentarios
+  const commentSection = document.getElementById("comment-section");
+  commentSection.insertAdjacentHTML("beforeend", newCommentHTML);
+
+  // Limpia el formulario
+  commentForm.reset();
+});
+
+
+/*-----------------------------------*\
+ * #Obtener la fecha y hora actual
+\*-----------------------------------*/
+const currentDate = new Date();
+
+// Formatear la fecha y hora en el formato deseado
+const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
+const formattedTime = `${currentDate.getHours().toString().padStart(2, '0')}:${currentDate.getMinutes().toString().padStart(2, '0')}:${currentDate.getSeconds().toString().padStart(2, '0')}`;
+
+
+/*-----------------------------------*\
+ * #Eliminar comentario
+\*-----------------------------------*/
+
+function deleteComment(button) {
+  const comment = button.parentElement; 
+  comment.remove(); // Eliminar el comentario del DOM
+}
+
+
+document.getElementById("finalDePagina").addEventListener("click", function() {
+  window.scrollTo(0, document.body.scrollHeight);
+});
+
+/*-----------------------------------*\
+ * #Funcion JSON
+\*-----------------------------------*/
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const selectedPlanetaId = localStorage.getItem("prodId");
+
+  if (selectedPlanetaId) {
+    const PLANETA = "comentarios.json"; // Ruta al archivo JSON
+
+    fetch(PLANETA)
+      .then(response => response.json())
+      .then(comentarios => {
+        // Mostrar los comentarios en la página
+        displayProductDetails(comentarios);
+      })
+      .catch(error => {
+        console.error("Error al cargar los datos del producto", error);
+      });
+  } else {
+    document.getElementById("comment-section").innerHTML = "<p>No se buscó ningún planeta.</p>";
+  }
+});
+
+function displayProductDetails(comentarios) {
+  const commentSection = document.getElementById("comment-section");
+
+  // Limpiar el contenido anterior, si lo hubiera
+  commentSection.innerHTML = "";
+
+  // Crear un elemento para cada comentario y agregarlo al DOM
+  comentarios.comentario.forEach(comentario => {
+    const commentDiv = document.createElement("div");
+    commentDiv.classList.add("comment");
+
+    const userPara = document.createElement("p");
+    userPara.textContent = `Usuario: ${comentario.user}`;
+
+    const descriptionPara = document.createElement("p");
+    descriptionPara.textContent = `Descripción: ${comentario.description}`;
+
+    const dateTimePara = document.createElement("p");
+    dateTimePara.textContent = `Fecha y hora: ${comentario.dateTime}`;
+
+    const scorePara = document.createElement("p");
+    scorePara.textContent = `Puntuación: ${comentario.score}`;
+
+    commentDiv.appendChild(userPara);
+    commentDiv.appendChild(descriptionPara);
+    commentDiv.appendChild(dateTimePara);
+    commentDiv.appendChild(scorePara);
+
+    commentSection.appendChild(commentDiv);
+  });
+}
